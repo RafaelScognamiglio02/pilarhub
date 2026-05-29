@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  passwordHash String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  sessions     Session[]
+  transactions Transaction[]
+  investments  Investment[]
+  projects     Project[]
+  goals        Goal[]
+  settings     AppSettings?
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Transaction {
+  id                 String   @id @default(cuid())
+  userId             String
+  date               DateTime
+  type               String
+  category           String
+  description        String
+  amount             Float
+  responsible        String
+  paymentMethod      String
+  card               String?
+  project            String   @default("Nenhum")
+  status             String
+  notes              String?
+  isRecurring        Boolean  @default(false)
+  installmentGroupId String?
+  installmentNumber  Int?
+  installmentTotal   Int?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([date])
+  @@index([type])
+  @@index([status])
+  @@index([card])
+  @@index([project])
+  @@index([isRecurring])
+  @@index([installmentGroupId])
+}
+
+model Investment {
+  id             String   @id @default(cuid())
+  userId         String
+  asset          String
+  category       String
+  institution    String?
+  quantity       Float
+  averagePrice   Float
+  investedAmount Float
+  currentPrice   Float
+  currentValue   Float
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Project {
+  id             String                 @id @default(cuid())
+  userId         String
+  name           String
+  category       String
+  investedAmount Float                  @default(0)
+  revenueAmount  Float                  @default(0)
+  status         String
+  notes          String?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  user           User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  monthlyResults ProjectMonthlyResult[]
+
+  @@index([userId])
+  @@unique([userId, name])
+}
+
+model ProjectMonthlyResult {
+  id         String   @id @default(cuid())
+  projectId  String
+  month      DateTime
+  revenue    Float    @default(0)
+  cost       Float    @default(0)
+  profit     Float    @default(0)
+  projection Float    @default(0)
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([month])
+}
+
+model Goal {
+  id            String    @id @default(cuid())
+  userId        String
+  name          String
+  category      String
+  targetAmount  Float
+  currentAmount Float
+  deadline      DateTime?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model AppSettings {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  brandName      String   @default("PilarHub")
+  ownerName      String   @default("Principal")
+  partnerName    String   @default("Parceiro")
+  sharedName     String   @default("Ambos")
+  thirdPartyName String   @default("Terceiros")
+  cardsCsv       String   @default("Cartão 1,Cartão 2,Outro")
+  projectsCsv    String   @default("Nenhum,Projeto A,Projeto B")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
