@@ -1,8 +1,21 @@
 import { ArrowRight, Lock, Mail, ShieldCheck, UserRound } from "lucide-react";
-import { login, register } from "@/app/login/actions";
 import { PilarLogo } from "@/components/pilar-logo";
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams
+}: {
+  searchParams?: Promise<{ erro?: string }>;
+}) {
+  const params = await searchParams;
+  const errorMessage =
+    params?.erro === "credenciais"
+      ? "Email ou senha incorretos."
+      : params?.erro === "cadastro"
+        ? "Nao foi possivel criar sua conta agora."
+        : params?.erro === "servidor"
+          ? "Nao foi possivel conectar ao banco agora."
+          : null;
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0d0d26] text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_50%,rgba(45,212,191,0.16),transparent_34rem),radial-gradient(circle_at_72%_24%,rgba(99,102,241,0.15),transparent_28rem)]" />
@@ -38,7 +51,13 @@ export default function LoginPage() {
                 Continue acompanhando seus indicadores financeiros.
               </p>
 
-              <form action={login} className="mt-8 space-y-5">
+              {errorMessage ? (
+                <div className="mt-6 rounded-lg border border-danger/40 bg-danger/10 px-4 py-3 text-sm font-semibold text-red-200">
+                  {errorMessage}
+                </div>
+              ) : null}
+
+              <form action="/login/entrar" method="post" className="mt-8 space-y-5">
                 <Field label="Email" icon={<Mail className="size-5" />}>
                   <input
                     name="email"
@@ -78,7 +97,7 @@ export default function LoginPage() {
                 Não tem uma conta?{" "}
                 <span className="font-semibold text-brand">Cadastre-se agora</span>
               </summary>
-              <form action={register} className="mt-6 space-y-4">
+              <form action="/login/cadastrar" method="post" className="mt-6 space-y-4">
                 <Field label="Nome" icon={<UserRound className="size-5" />}>
                   <input
                     name="name"
