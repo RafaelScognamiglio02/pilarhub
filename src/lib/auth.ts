@@ -1,4 +1,5 @@
 import { randomBytes, timingSafeEqual, pbkdf2Sync } from "node:crypto";
+import { unstable_noStore as noStore } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { User } from "@prisma/client";
@@ -46,6 +47,8 @@ export async function createSession(userId: string) {
 }
 
 export async function getCurrentUser(): Promise<User | null> {
+  noStore();
+
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
   if (!token) return null;
