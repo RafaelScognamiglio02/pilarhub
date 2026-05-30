@@ -5,6 +5,9 @@ import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getSettings } from "@/lib/settings";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function RelatorioMensalPage() {
   const user = await requireUser();
   const [transactions, investments, goals, settings] = await Promise.all([

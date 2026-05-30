@@ -12,6 +12,9 @@ import {
   getSettings
 } from "@/lib/settings";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function LancamentosPage() {
   const user = await requireUser();
   const [transactions, settings, dbProjects] = await Promise.all([

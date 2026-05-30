@@ -11,6 +11,9 @@ import { inputDate, money } from "@/lib/format";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function MetasPage() {
   const user = await requireUser();
   const goals = await prisma.goal.findMany({

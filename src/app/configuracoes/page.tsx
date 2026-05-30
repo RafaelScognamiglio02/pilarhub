@@ -12,6 +12,9 @@ import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getSettings } from "@/lib/settings";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function ConfiguracoesPage() {
   const user = await requireUser();
   const { start, end } = currentMonthRange();

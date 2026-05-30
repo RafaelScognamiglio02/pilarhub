@@ -12,6 +12,9 @@ import { prisma } from "@/lib/prisma";
 import { getCardOptions, getSettings } from "@/lib/settings";
 import { cn } from "@/lib/ui";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 function normalizeCardFilter(value: string | undefined, cardFilters: string[]) {
   return cardFilters.find((card) => card === value) ?? "Todos";
 }

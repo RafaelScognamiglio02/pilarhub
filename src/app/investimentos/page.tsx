@@ -14,6 +14,9 @@ import { labelize, money, ratio } from "@/lib/format";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function InvestimentosPage() {
   const user = await requireUser();
   const investments = await prisma.investment.findMany({
