@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
@@ -39,10 +38,9 @@ export function Sidebar() {
             item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
 
           return (
-            <Link
+            <a
               key={item.href}
               href={item.href}
-              prefetch={false}
               className={cn(
                 "flex min-w-max items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition",
                 active
@@ -52,7 +50,7 @@ export function Sidebar() {
             >
               <Icon className="size-4" />
               {item.label}
-            </Link>
+            </a>
           );
         })}
       </nav>
@@ -64,13 +62,13 @@ export function Sidebar() {
         </p>
       </div>
 
-      <Link
+      <a
         href="/logout"
         className="mt-4 hidden items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-textSoft transition hover:bg-panelSoft hover:text-white lg:flex"
       >
         <LogOut className="size-4" />
         Sair
-      </Link>
+      </a>
     </aside>
   );
 }
